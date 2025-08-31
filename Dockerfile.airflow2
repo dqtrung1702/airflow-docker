@@ -1,0 +1,35 @@
+# Sử dụng hình ảnh cơ sở từ Apache Airflow
+FROM apache/airflow:2.9.0
+
+# Chuyển sang user root để cài đặt gói hệ thống
+USER root
+
+# Cài đặt các phụ thuộc hệ thống cần thiết cho Oracle Instant Client
+RUN apt-get update && apt-get install -y \
+    libaio1 \
+    wget \
+    unzip \
+    nano \
+    && rm -rf /var/lib/apt/lists/*
+
+# Tạo thư mục cho Oracle Instant Client và tải file từ URL
+ENV ORACLE_HOME=/opt/oracle/instantclient_19_8
+RUN mkdir -p /opt/oracle && \
+    cd /opt/oracle && \
+    wget -O instantclient-sqlplus.zip https://download.oracle.com/otn_software/linux/instantclient/19800/instantclient-sqlplus-linux.x64-19.8.0.0.0dbru.zip && \
+    unzip instantclient-sqlplus.zip && \
+    # Tạo symbolic link nếu cần (đảm bảo tương thích với cx_Oracle)
+    ln -s /opt/oracle/instantclient_19_8/libclntsh.so.19.1 /opt/oracle/instantclient_19_8/libclntsh.so && \
+    # Xóa file ZIP để giảm kích thước hình ảnh
+    rm instantclient-sqlplus.zip
+
+# Cấu hình biến môi trường cho Oracle Client
+ENV LD_LIBRARY_PATH=$ORACLE_HOME:$LD_LIBRARY_PATH
+ENV PATH=$ORACLE_HOME:$PATH
+
+# Chuyển lại sang user airflow
+USER airflow
+
+# Sao chép và cài đặt requirements.txt
+COPY requirements.txt /opt/airflow/requirements.txt
+RUN pip install --no-cache-dir -r /opt/airflow/requirements.txt

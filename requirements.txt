@@ -1,0 +1,8 @@
+vnstock3 
+psycopg2-binary
+openmeteo-requests
+requests-cache 
+retry-requests 
+numpy 
+pandas
+chardet

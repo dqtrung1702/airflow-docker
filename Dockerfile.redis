@@ -1,0 +1,4 @@
+FROM redis:latest
+USER root
+RUN apt update && apt install -y nano
+USER redis

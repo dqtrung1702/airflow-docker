@@ -1,0 +1,12 @@
+# Sử dụng hình ảnh cơ sở từ Apache Airflow
+FROM apache/airflow:2.9.0
+USER root
+RUN apt update && apt install -y nano
+# Chuyển sang user airflow (được định nghĩa sẵn trong hình ảnh Airflow)
+USER airflow
+
+# Sao chép file requirements.txt vào container
+COPY requirements.txt /opt/airflow/requirements.txt
+
+# Cài đặt các thư viện từ requirements.txt
+RUN pip install --no-cache-dir -r /opt/airflow/requirements.txt
