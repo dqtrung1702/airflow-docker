@@ -1,11 +1,13 @@
 ## Git
 
 git init
-git add README.md
+git add readme.md
+git add .gitignore
 git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/dqtrung1702/airflow-docker.git
 git push -u origin main
+git push -f origin main # Thêm flag -f để force push
 
 ## Thành phần
 
